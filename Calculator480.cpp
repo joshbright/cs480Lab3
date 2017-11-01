@@ -8,8 +8,7 @@
 
 using namespace std;
 
-string input();
-void calculate(string input);
+void calculate();
 vector<string> splitter(string input);
 double addition(double num1, double num2);
 double subtraction(double num1, double num2);
@@ -21,47 +20,28 @@ double exponent(double num1, double num2);
 
 int main()
 {
-	input();
+	calculate();
 	return 0;
 }
 
-void input()
+void calculate()
 {
+	vector<string> splitter; //vector that will contain split up characters
 	cout << "input what you want to calculate: ";
 	char input = cin.get();
-}
 
-void calculate(string input)
-{
-	//split string into the vector
-	vector<string> splitter;
-
-
-}
-
-vector<string> splitter(string input)
-{
-	vector<string> splitter;
-	vector<int> tempInt;
-	int count = 0;
-	int max = input.length();
-
-	for(int i = 0; i < max; i++)
+	if( (input >= '0') && (input <= '9'))
 	{
-		char tempString = input.substr(i,1);
-		if(tempString.compare("+"))
-			splitter.push_back(tempString);
-		else if (tempString.compare("-"))
-			splitter.push_back(tempString);
-		else if (tempString.compare("*"))
-			splitter.push_back(tempString);
-		else if (tempString.compare("/"))
-			splitter.push_back(tempString);
-		else if ()
-
-
+		int n;
+		cin.putback(input);
+		cin >> n;
+		cout << "you input: " << n << endl;
 	}
+	else
+	{
 
+		//switch()
+	}
 
 }
 
