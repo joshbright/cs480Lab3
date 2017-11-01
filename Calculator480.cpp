@@ -4,12 +4,14 @@
 #include<iostream>
 #include<string>
 #include<vector>
+#include<sstream>
 #include "stdafx.h"
 
 using namespace std;
 
+
 void calculate();
-vector<string> splitter(string input);
+vector<string> split();
 double addition(double num1, double num2);
 double subtraction(double num1, double num2);
 double multiplication(double num1, double num2);
@@ -26,30 +28,41 @@ int main()
 
 void calculate()
 {
-	vector<string> splitter; //vector that will contain split up characters
+	 //vector that will contain split up characters
+	vector<string> splitter = split();
+
+
+}
+
+vector<string> split()
+{
+	vector<string> splitter;
 	cout << "input what you want to calculate: ";
 	while(char input = cin.get())
 	{
-
+		ostringstream convert;
 		if(input == '\n')
-			return;
+			break;
 		else if( (input >= '0') && (input <= '9'))
 		{
 			int n;
 			cin.putback(input);
 			cin >> n;
-			cout << "you input: " << n << endl;
+			convert << n;
+			cout << "num is: " << n << endl;
+			splitter.push_back(convert.str());
 		}
 		else
 		{
 			char c;
 			cin.putback(input);
 			cin >> c;
-			cout << "something else" << endl;
-			//return;
-			//switch()
+			convert << c;
+			cout << "char is: " << c << endl;
+			splitter.push_back(convert.str());
 		}
 	}
+	return splitter;
 }
 
 double addition(double num1, double num2)
