@@ -3,9 +3,9 @@
 
 #include<iostream>
 #include<string>
-#include<vector>
-#include<sstream>
-#include "stdafx.h"
+#include<vector> //needed for vector
+#include<sstream> //needed for ostringstream
+#include<cctype> //needed for isdigit
 
 using namespace std;
 
@@ -30,11 +30,11 @@ void calculate()
 {
 	 //vector that will contain split up characters
 	vector<string> splitter = split();
-
+	
 
 }
 
-vector<string> split()
+vector<string> split() //split the input into an array
 {
 	vector<string> splitter;
 	cout << "input what you want to calculate: ";
@@ -43,9 +43,9 @@ vector<string> split()
 		ostringstream convert;
 		if(input == '\n')
 			break;
-		else if( (input >= '0') && (input <= '9'))
+		else if( ((input >= '0') && (input <= '9')) || (input == '.') )
 		{
-			int n;
+			double n;
 			cin.putback(input);
 			cin >> n;
 			convert << n;
