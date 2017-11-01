@@ -12,6 +12,7 @@ using namespace std;
 
 
 void calculate();
+vector<string> parser();
 vector<string> split();
 bool isNumber(string s);
 double addition(double num1, double num2);
@@ -24,12 +25,17 @@ double exponent(double num1, double num2);
 
 int main()
 {
-	calculate();
+	parser();
 	system("PAUSE");
 	return 0;
 }
 
 void calculate()
+{
+	vector<string> parsedVector = parser();
+}
+
+vector<string> parser()
 {
 	 //vector that will contain split up characters
 	vector<string> splitter = split();
@@ -44,7 +50,6 @@ void calculate()
 		{
 			string tempString = splitter[i];
 			char test = tempString[0]; //this converts the string to char
-			cout << "swag" << test <<endl;
 			switch(test)
 			{
 			case '+':
@@ -71,6 +76,7 @@ void calculate()
 			}
 		}
 	}
+	return reversePolish;
 }
 
 vector<string> split() //split the input into an array
