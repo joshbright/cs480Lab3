@@ -10,10 +10,10 @@
 using namespace std;
 
 
-void parser();
+
+void calculate();
+vector<string> parser();
 vector<string> split();
-vector<string> twoCharacterChecker(vector<string> splitter);
-vector<string> doubleNeg(vector<string> splitter, int i);
 bool isNumber(string s);
 double addition(double num1, double num2);
 double subtraction(double num1, double num2);
@@ -30,70 +30,53 @@ int main()
 	return 0;
 }
 
+void calculate()
+{
+	vector<string> parsedVector = parser();
+}
 
-void parser()
+vector<string> parser()
 {
 	 //vector that will contain split up characters
 	vector<string> splitter = split();
 	vector<string> reversePolish;
-
-
-	int parenCount = 0;
-	int operationCount = 0;
-	int sizeOfSplitter = splitter.size();
-	int j = 0; //used to keep track of the index
-
-
-	for(int i = 0; i < sizeOfSplitter; i++)
+	for(int i = 0; i < splitter.size(); i++)
 	{
-		//if the element at j is a number push to the reversePolish array
-		if(isNumber(splitter[j]))
+		if(isNumber(splitter[i]))
 		{
-			reversePolish.push_back(splitter[j]);
-			splitter.erase(splitter.begin());
+			reversePolish.push_back(splitter[i]);
 		}
 		else
 		{
-			string tempString = splitter[j];
+			string tempString = splitter[i];
 			char test = tempString[0]; //this converts the string to char
 			switch(test)
 			{
 			case '+':
-				j++;
+				cout << "The ouput is +" << endl;
 				break;
 			case '-':
-				j++;
+				cout << "The ouput is -" << endl;
 				break;
 			case '/':
-				j++;
+				cout << "The ouput is /" << endl;
 				break;
 			case '*':
-				j++;
+				cout << "The ouput is *" << endl;
 				break;
 			case '^':
-				j++;
+				cout << "The ouput is ^" << endl;
 				break;
 			case '(':
-				splitter.erase(splitter.begin());
-				parenCount++;
+				cout << "The ouput is (" << endl;
 				break;
 			case ')':
 				cout << "The ouput is )" << endl;
-				parenCount--;
-				j++;
 				break;
-			default:
-				cout << "There is an incorrect symbol entered" << endl;
-				return;
 			}
 		}
 	}
-
-
-
-
-	//This is after the reverse polish
-	//Start of actual calculator
+	return reversePolish;
 }
 
 vector<string> split() //split the input into an array
@@ -103,12 +86,7 @@ vector<string> split() //split the input into an array
 	while(char input = cin.get())
 	{
 		ostringstream convert;
-		if((input == '\n') && splitter.size() == 0)
-		{
-			cout << "No input" << endl;
-			break;
-		}
-		else if(input == '\n')
+		if(input == '\n')
 			break;
 		else if( ((input >= '0') && (input <= '9')) || (input == '.') )
 		{
@@ -129,103 +107,6 @@ vector<string> split() //split the input into an array
 			splitter.push_back(convert.str());
 		}
 	}
-
-	//TODO: call twoCharacterChecker to check characters
-	splitter = twoCharacterChecker(splitter);
-	return splitter;
-}
-
-vector<string> twoCharacterChecker(vector<string> splitter)
-{
-	//This checks if there are two characters in a row
-	cout << "Before the for loop" << endl;
-	int negCount = 0;
-	vector<string> fixed = splitter;
-	for(int i=1; i < splitter.size(); i++)
-	{
-		cout << "i is" << i <<endl;
-		cout << "splitter[i-1] is: "<< splitter[i-1] << endl;
-		cout << "splitter[i] is: "<< splitter[i] << endl;
-		string temp1 = splitter[i-1];
-		string temp2 = splitter[i];
-		char checked1 = temp1[0];
-		char checked2 = temp2[0];
-		cout <<"ispunct checked1: "<< !ispunct(checked1) << endl;
-		if(!ispunct(checked1))
-		{
-			cout << "checked 1 was: " << checked1 << endl;
-			negCount = 0;
-		}
-		else if(splitter[i-1] == "-")
-		{
-			cout << "negCount incremented" << endl;
-			negCount ++;
-		}
-
-
-		if(ispunct(checked1) && ispunct(checked2))
-		{
-			if( (splitter[i-1] == "-") && (splitter[i] == "-") && negCount >= 2 )
-			{
-				cout <<" ERROR: There are too many -'s in a row"<<endl;
-				system("PAUSE");
-				exit(EXIT_FAILURE);
-			}
-			else if((splitter[i-1] == "-") && ( splitter[i] != "(" && splitter[i] != ")" && splitter[i] != "-") )
-			{
-				cout <<" ERROR: You have input a - before another character"<<endl;
-				system("PAUSE");
-				exit(EXIT_FAILURE);
-			}
-			else if((splitter[i-1] == "+") && (splitter[i] == "+"))
-			{
-				cout <<" ERROR: There are too many +'s in a row"<<endl;
-				system("PAUSE");
-				exit(EXIT_FAILURE);
-			}
-			else if((splitter[i-1] == "/") && (splitter[i] == "/"))
-			{
-				cout <<" ERROR: There are too many /'s in a row"<<endl;
-				system("PAUSE");
-				exit(EXIT_FAILURE);
-			}
-			else if((splitter[i-1] == "*") && (splitter[i] == "*"))
-			{
-				cout <<" ERROR: There are too many *'s in a row"<<endl;
-				system("PAUSE");
-				exit(EXIT_FAILURE);
-			}
-			else if((splitter[i-1] == "^") && (splitter[i] == "^"))
-			{
-				cout <<" ERROR: There are too many ^'s in a row"<<endl;
-				system("PAUSE");
-				exit(EXIT_FAILURE);
-			}
-			else if(i+1 < splitter.size())
-			{
-				string temp3 = splitter[i+1];
-				char checked3 = temp3[0];
-				
-				if(splitter[i-1] == "-" && splitter[i] == "-" && !ispunct(checked3))
-				{
-					fixed = doubleNeg(splitter, i-1);
-					splitter = fixed;
-					negCount = 0;
-				}
-			}
-
-			else if(splitter[i-1] == "-")
-			{
-				//do nothing
-			}
-			else 
-			{
-				cout <<" ERROR: random error"<<endl;
-				system("PAUSE");
-				exit(EXIT_FAILURE);
-			}
-		}
-	}
 	return splitter;
 }
 
@@ -242,18 +123,24 @@ bool isNumber(string s)
 	return true;
 }
 
-vector<string> doubleNeg(vector<string> splitter, int i)
+int operatorPriority(char op)
 {
-	double temp = stod(splitter[i+2]);
-	temp *= -1;
-	splitter.erase(splitter.begin()+i);
-	splitter.erase(splitter.begin()+i+1);
-	ostringstream convert;
-	convert << temp;
-	string str = convert.str();
-	i=i++;
-	splitter.insert(splitter.begin()+i, str);
-	return splitter;
+	switch(op)
+	{
+	case '+':
+		return 1;
+	case '-':
+		return 1;
+	case '*':
+		return 2;
+	case '/':
+		return 2;
+	case '^':
+		return 3;
+	default:
+		return 0;
+	}
+	
 }
 
 double addition(double num1, double num2)
