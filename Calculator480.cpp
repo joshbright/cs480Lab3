@@ -5,13 +5,15 @@
 #include<string>
 #include<vector> //needed for vector
 #include<sstream> //needed for ostringstream
-#include<cctype> //needed for isdigit
+#include<cstdlib>
 
 using namespace std;
 
 
+
 void calculate();
 vector<string> split();
+bool isNumber(string s);
 double addition(double num1, double num2);
 double subtraction(double num1, double num2);
 double multiplication(double num1, double num2);
@@ -23,6 +25,7 @@ double exponent(double num1, double num2);
 int main()
 {
 	calculate();
+	system("PAUSE");
 	return 0;
 }
 
@@ -30,8 +33,44 @@ void calculate()
 {
 	 //vector that will contain split up characters
 	vector<string> splitter = split();
-	
-
+	vector<string> reversePolish;
+	for(int i = 0; i < splitter.size(); i++)
+	{
+		if(isNumber(splitter[i]))
+		{
+			reversePolish.push_back(splitter[i]);
+		}
+		else
+		{
+			string tempString = splitter[i];
+			char test = tempString[0]; //this converts the string to char
+			cout << "swag" << test <<endl;
+			switch(test)
+			{
+			case '+':
+				cout << "The ouput is +" << endl;
+				break;
+			case '-':
+				cout << "The ouput is -" << endl;
+				break;
+			case '/':
+				cout << "The ouput is /" << endl;
+				break;
+			case '*':
+				cout << "The ouput is *" << endl;
+				break;
+			case '^':
+				cout << "The ouput is ^" << endl;
+				break;
+			case '(':
+				cout << "The ouput is (" << endl;
+				break;
+			case ')':
+				cout << "The ouput is )" << endl;
+				break;
+			}
+		}
+	}
 }
 
 vector<string> split() //split the input into an array
@@ -49,7 +88,7 @@ vector<string> split() //split the input into an array
 			cin.putback(input);
 			cin >> n;
 			convert << n;
-			cout << "num is: " << n << endl;
+			cout << "is the num: " << n << endl;
 			splitter.push_back(convert.str());
 		}
 		else
@@ -58,11 +97,24 @@ vector<string> split() //split the input into an array
 			cin.putback(input);
 			cin >> c;
 			convert << c;
-			cout << "char is: " << c << endl;
+			cout << "not num: " << c << endl;
 			splitter.push_back(convert.str());
 		}
 	}
 	return splitter;
+}
+
+bool isNumber(string s)
+{
+	try
+	{
+		stod(s.c_str());
+	}	
+	catch(...)
+	{
+		return false;
+	}
+	return true;
 }
 
 double addition(double num1, double num2)
