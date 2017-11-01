@@ -28,21 +28,28 @@ void calculate()
 {
 	vector<string> splitter; //vector that will contain split up characters
 	cout << "input what you want to calculate: ";
-	char input = cin.get();
-
-	if( (input >= '0') && (input <= '9'))
-	{
-		int n;
-		cin.putback(input);
-		cin >> n;
-		cout << "you input: " << n << endl;
-	}
-	else
+	while(char input = cin.get())
 	{
 
-		//switch()
+		if(input == '\n')
+			return;
+		else if( (input >= '0') && (input <= '9'))
+		{
+			int n;
+			cin.putback(input);
+			cin >> n;
+			cout << "you input: " << n << endl;
+		}
+		else
+		{
+			char c;
+			cin.putback(input);
+			cin >> c;
+			cout << "something else" << endl;
+			//return;
+			//switch()
+		}
 	}
-
 }
 
 double addition(double num1, double num2)
@@ -64,5 +71,5 @@ double division(double num1, double num2)
 }
 double exponent(double num1, double num2)
 {
-
+	return 0.0;
 }
