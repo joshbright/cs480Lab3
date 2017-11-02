@@ -1,11 +1,14 @@
 // Calculator480.cpp : Defines the entry point for the console application.
-//
+// Joshua Bright
 
+#include <stdio.h>
+#include <tchar.h>
 #include<iostream>
 #include<string>
 #include<vector> //needed for vector
 #include<sstream> //needed for ostringstream
 #include<cstdlib>
+#include<stack>
 #include<float.h>
 
 using namespace std;
