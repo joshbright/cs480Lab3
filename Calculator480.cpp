@@ -6,9 +6,9 @@
 #include<vector> //needed for vector
 #include<sstream> //needed for ostringstream
 #include<cstdlib>
+#include<float.h>
 
 using namespace std;
-
 
 
 void parser();
@@ -23,15 +23,12 @@ double multiplication(double num1, double num2);
 double division(double num1, double num2);
 double exponent(double num1, double num2);
 
-
-
 int main()
 {
 	parser();
 	system("PAUSE");
 	return 0;
 }
-
 
 void parser()
 {
@@ -131,15 +128,45 @@ void parser()
 		string temp = reversePolish[i];
 		if(isNumber(reversePolish[i]))
 		{
-			calc.push_back((double) temp[0]);
+			calc.push_back(stod(reversePolish[i]));
+		}
+		else
+		{
+			double num2 = calc.back();
+			calc.pop_back();
+			double num1 = calc.back();
+			calc.pop_back();
+			
+			char test = temp[0];
+			switch(test)
+			{
+			case '+':
+				calc.push_back(addition(num1, num2));
+				break;
+			case '-':
+				calc.push_back(subtraction(num1,num2));
+				break;
+			case '*':
+				calc.push_back(multiplication(num1,num2));
+				break;
+			case '/':
+				calc.push_back(division(num1,num2));
+				break;
+			case '^':
+				calc.push_back(exponent(num1,num2));
+				break;
+			default:
+				cout << "An unknown character has been encountered" << endl;
+				return;
+			}
 		}
 	}
 
 
-
-
+	cout << "The answer is: " << calc.back() << endl;
 
 }
+
 
 vector<string> split() //split the input into an array
 {
@@ -176,6 +203,12 @@ vector<string> split() //split the input into an array
 	}
 
 	//TODO: call twoCharacterChecker to check characters
+	if(!isNumber(splitter.front()) && splitter.front() != "-" && splitter.front() != "(")
+	{
+		cout <<" ERROR: You have entered an incorrect character in the front of your expression"<<endl;
+		system("PAUSE");
+		exit(EXIT_FAILURE);
+	}
 	splitter = twoCharacterChecker(splitter);
 	return splitter;
 }
@@ -289,6 +322,32 @@ vector<string> twoCharacterChecker(vector<string> splitter)
 				exit(EXIT_FAILURE);*/
 			}
 		}
+		if(splitter.front() == "-" && i == 1 && isNumber(splitter[1]))
+		{
+			double makeNeg = stod(splitter[1]);
+			splitter.erase(splitter.begin());
+			splitter.erase(splitter.begin());
+			makeNeg = makeNeg * -1;
+			ostringstream convert;
+			convert << makeNeg;
+			string str = convert.str();
+			splitter.insert(splitter.begin(), str);
+		}
+
+		else if(i > 2 && (splitter[i-2] == "+" || splitter[i-2] == "/" || splitter[i-2] == "*" || splitter[i-2] == "^") && splitter[i-1] == "-" && isNumber(splitter[i]))
+		{
+			double makeNeg = stod(splitter[i]);
+			splitter.erase(splitter.begin()+i-1);
+			splitter.erase(splitter.begin()+i-1);
+			makeNeg = makeNeg * -1;
+			ostringstream convert;
+			convert << makeNeg;
+			string str = convert.str();
+			if(i <= 3)
+				splitter.push_back(str);
+			else
+				splitter.insert(splitter.begin()+i-1, str);
+		}
 	}
 	return splitter;
 }
@@ -341,22 +400,57 @@ int operatorPriority(string operation)
 }
 double addition(double num1, double num2)
 {
-	return num1 + num2;
+	if(_finite(num1+num2))
+		return num1 + num2;
+	else
+	{
+		cout <<" ERROR: The solution of the equation is not finite"<<endl;
+		system("PAUSE");
+		exit(EXIT_FAILURE);
+	}
 }
 double subtraction(double num1, double num2)
 {
-	return num1 - num2;
+	if(_finite(num1-num2))
+		return num1 - num2;
+	else
+	{
+		cout <<" ERROR: The solution of the equation is not finite"<<endl;
+		system("PAUSE");
+		exit(EXIT_FAILURE);
+	}
 }
 double multiplication(double num1, double num2)
 {
-	return num1 * num2;
+	if(_finite(num1*num2))
+		return num1*num2;
+	else
+	{
+		cout <<" ERROR: The solution of the equation is not finite"<<endl;
+		system("PAUSE");
+		exit(EXIT_FAILURE);
+	}
 }
 double division(double num1, double num2)
 {
 	//will check before this function to ensure num2 != 0
+	if(num2 == 0)
+	{
+		cout <<" ERROR: You attempted to divide by divide by zero"<<endl;
+		system("PAUSE");
+		exit(EXIT_FAILURE);
+	}
+
 	return num1 / num2;
 }
 double exponent(double num1, double num2)
 {
-	return 0.0;
+	if(_finite((double)pow(num1,num2)))
+		return pow(num1,num2);
+	else
+	{
+		cout <<" ERROR: The solution of the equation is not finite"<<endl;
+		system("PAUSE");
+		exit(EXIT_FAILURE);
+	}
 }
