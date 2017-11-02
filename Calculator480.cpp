@@ -11,7 +11,6 @@ using namespace std;
 
 
 
-
 void parser();
 vector<string> split();
 vector<string> twoCharacterChecker(vector<string> splitter);
@@ -106,6 +105,7 @@ void parser()
 					reversePolish.push_back(stack.back()); //add top element of stack to reverse polish
 					stack.pop_back(); //pop element off the stack
 				}
+				stack.pop_back();
 				break;
 			default:
 				cout << "There is an incorrect symbol entered" << endl;
@@ -124,6 +124,21 @@ void parser()
 
 	//This is after the reverse polish
 	//Start of actual calculator
+
+	vector<double> calc;
+	for(int i = 0; i< reversePolish.size(); i++)
+	{
+		string temp = reversePolish[i];
+		if(isNumber(reversePolish[i]))
+		{
+			calc.push_back((double) temp[0]);
+		}
+	}
+
+
+
+
+
 }
 
 vector<string> split() //split the input into an array
@@ -146,7 +161,7 @@ vector<string> split() //split the input into an array
 			cin.putback(input);
 			cin >> n;
 			convert << n;
-			cout << "is the num: " << n << endl;
+			//cout << "is the num: " << n << endl;
 			splitter.push_back(convert.str());
 		}
 		else
@@ -155,7 +170,7 @@ vector<string> split() //split the input into an array
 			cin.putback(input);
 			cin >> c;
 			convert << c;
-			cout << "not num: " << c << endl;
+			//cout << "not num: " << c << endl;
 			splitter.push_back(convert.str());
 		}
 	}
@@ -168,32 +183,50 @@ vector<string> split() //split the input into an array
 vector<string> twoCharacterChecker(vector<string> splitter)
 {
 	//This checks if there are two characters in a row
-	cout << "Before the for loop" << endl;
+	
 	int negCount = 0;
 	vector<string> fixed = splitter;
 	for(int i=1; i < splitter.size(); i++)
 	{
-		cout << "i is" << i <<endl;
-		cout << "splitter[i-1] is: "<< splitter[i-1] << endl;
-		cout << "splitter[i] is: "<< splitter[i] << endl;
 		string temp1 = splitter[i-1];
 		string temp2 = splitter[i];
-		char checked1 = temp1[0];
-		char checked2 = temp2[0];
-		cout <<"ispunct checked1: "<< !ispunct(checked1) << endl;
-		if(!ispunct(checked1))
+
+		if(isNumber(temp1))
 		{
-			cout << "checked 1 was: " << checked1 << endl;
+			double checked1 = stod(temp1);
 			negCount = 0;
 		}
-		else if(splitter[i-1] == "-")
+		else
 		{
-			cout << "negCount incremented" << endl;
-			negCount ++;
+			char checked1 = temp1[0];
+			if(splitter[i-1] == "-")
+			{
+				negCount ++;
+			}
 		}
 
+		if(isNumber(temp2))
+		{
+			double checked2 = stod(temp2);
+		}
+		else
+		{
+			char checked2 = temp2[0];
+		}
 
-		if(ispunct(checked1) && ispunct(checked2))
+		
+		//checks if there are two numbers only seperated by a paraenthesis
+		if(i+1 < splitter.size())
+		{
+			if(isNumber(splitter[i-1]) && isNumber(splitter[i+1]) && (splitter[i] != "+" && splitter[i] != "-" && splitter[i] != "/" && splitter[i] != "*" && splitter[i] != "^"))
+			{
+				cout <<" ERROR: There are two numbers in a row. Please use the operator * for multiplication"<<endl;
+				system("PAUSE");
+				exit(EXIT_FAILURE);
+			}
+		}
+
+		if(!isNumber(temp2) && !isNumber(temp2))
 		{
 			if( (splitter[i-1] == "-") && (splitter[i] == "-") && negCount >= 2 )
 			{
@@ -250,9 +283,10 @@ vector<string> twoCharacterChecker(vector<string> splitter)
 			}
 			else 
 			{
+				/*
 				cout <<" ERROR: random error"<<endl;
 				system("PAUSE");
-				exit(EXIT_FAILURE);
+				exit(EXIT_FAILURE);*/
 			}
 		}
 	}
