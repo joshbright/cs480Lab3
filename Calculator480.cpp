@@ -10,7 +10,6 @@
 
 using namespace std;
 
-
 void parser();
 vector<string> split();
 vector<string> twoCharacterChecker(vector<string> splitter);
@@ -356,6 +355,17 @@ vector<string> twoCharacterChecker(vector<string> splitter)
 				splitter.push_back(str);
 			else
 				splitter.insert(splitter.begin()+i-1, str);
+		}
+		else if(i > 2 && (splitter[i-3] == "+" || splitter[i-3] == "/" || splitter[i-3] == "*" || splitter[i-3] == "^"|| splitter[i-3] == "-") && splitter[i-2] == "(" && splitter[i-1] == "-" && isNumber(splitter[i]))
+		{
+			double makeNeg = stod(splitter[i]);
+			splitter.erase(splitter.begin()+i-1);
+			splitter.erase(splitter.begin()+i-1);
+			makeNeg = makeNeg * -1;
+			ostringstream convert;
+			convert << makeNeg;
+			string str = convert.str();
+			splitter.insert(splitter.begin()+i-1, str);
 		}
 	}
 	return splitter;
