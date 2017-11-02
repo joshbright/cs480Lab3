@@ -11,9 +11,12 @@ using namespace std;
 
 
 
-void calculate();
-vector<string> parser();
+
+void parser();
 vector<string> split();
+vector<string> twoCharacterChecker(vector<string> splitter);
+vector<string> doubleNeg(vector<string> splitter, int i);
+int operatorPriority(string operation);
 bool isNumber(string s);
 double addition(double num1, double num2);
 double subtraction(double num1, double num2);
@@ -30,18 +33,20 @@ int main()
 	return 0;
 }
 
-void calculate()
-{
-	vector<string> parsedVector = parser();
-}
 
-vector<string> parser()
+void parser()
 {
 	 //vector that will contain split up characters
-	vector<string> splitter = split();
-	vector<string> reversePolish;
-	for(int i = 0; i < splitter.size(); i++)
+	vector<string> splitter = split(); //the input vector
+	vector<string> reversePolish; //The vector to store the postfix
+	vector<string> stack; //The stack to keep track of parens
+
+	int sizeOfSplitter = splitter.size();
+
+
+	for(int i = 0; i < sizeOfSplitter; i++)
 	{
+		//if the element at j is a number push to the reversePolish array
 		if(isNumber(splitter[i]))
 		{
 			reversePolish.push_back(splitter[i]);
@@ -53,30 +58,72 @@ vector<string> parser()
 			switch(test)
 			{
 			case '+':
-				cout << "The ouput is +" << endl;
+				while(operatorPriority(tempString) <= operatorPriority(stack.back()) && !stack.empty())
+				{
+					reversePolish.push_back(stack.back());
+					stack.pop_back();
+				}
+				stack.push_back(splitter[i]);
 				break;
 			case '-':
-				cout << "The ouput is -" << endl;
+				while(operatorPriority(tempString) <= operatorPriority(stack.back()) && !stack.empty())
+				{
+					reversePolish.push_back(stack.back());
+					stack.pop_back();
+				}
+				stack.push_back(splitter[i]);
 				break;
 			case '/':
-				cout << "The ouput is /" << endl;
+				while(operatorPriority(tempString) <= operatorPriority(stack.back()) && !stack.empty())
+				{
+					reversePolish.push_back(stack.back());
+					stack.pop_back();
+				}
+				stack.push_back(splitter[i]);
 				break;
 			case '*':
-				cout << "The ouput is *" << endl;
+				while(operatorPriority(tempString) <= operatorPriority(stack.back()) && !stack.empty())
+				{
+					reversePolish.push_back(stack.back());
+					stack.pop_back();
+				}
+				stack.push_back(splitter[i]);
 				break;
 			case '^':
-				cout << "The ouput is ^" << endl;
+				while(operatorPriority(tempString) <= operatorPriority(stack.back()) && !stack.empty())
+				{
+					reversePolish.push_back(stack.back());
+					stack.pop_back();
+				}
+				stack.push_back(splitter[i]);
 				break;
 			case '(':
-				cout << "The ouput is (" << endl;
+				stack.push_back(splitter[i]); //insert ( onto stack
 				break;
 			case ')':
-				cout << "The ouput is )" << endl;
+				while(stack.back() != "(" && !stack.empty())
+				{
+					reversePolish.push_back(stack.back()); //add top element of stack to reverse polish
+					stack.pop_back(); //pop element off the stack
+				}
 				break;
+			default:
+				cout << "There is an incorrect symbol entered" << endl;
+				return;
 			}
 		}
 	}
-	return reversePolish;
+
+	while(!stack.empty())
+	{
+		reversePolish.push_back(stack.back());
+		stack.pop_back();
+	}
+
+
+
+	//This is after the reverse polish
+	//Start of actual calculator
 }
 
 vector<string> split() //split the input into an array
@@ -86,7 +133,12 @@ vector<string> split() //split the input into an array
 	while(char input = cin.get())
 	{
 		ostringstream convert;
-		if(input == '\n')
+		if((input == '\n') && splitter.size() == 0)
+		{
+			cout << "No input" << endl;
+			break;
+		}
+		else if(input == '\n')
 			break;
 		else if( ((input >= '0') && (input <= '9')) || (input == '.') )
 		{
@@ -107,6 +159,103 @@ vector<string> split() //split the input into an array
 			splitter.push_back(convert.str());
 		}
 	}
+
+	//TODO: call twoCharacterChecker to check characters
+	splitter = twoCharacterChecker(splitter);
+	return splitter;
+}
+
+vector<string> twoCharacterChecker(vector<string> splitter)
+{
+	//This checks if there are two characters in a row
+	cout << "Before the for loop" << endl;
+	int negCount = 0;
+	vector<string> fixed = splitter;
+	for(int i=1; i < splitter.size(); i++)
+	{
+		cout << "i is" << i <<endl;
+		cout << "splitter[i-1] is: "<< splitter[i-1] << endl;
+		cout << "splitter[i] is: "<< splitter[i] << endl;
+		string temp1 = splitter[i-1];
+		string temp2 = splitter[i];
+		char checked1 = temp1[0];
+		char checked2 = temp2[0];
+		cout <<"ispunct checked1: "<< !ispunct(checked1) << endl;
+		if(!ispunct(checked1))
+		{
+			cout << "checked 1 was: " << checked1 << endl;
+			negCount = 0;
+		}
+		else if(splitter[i-1] == "-")
+		{
+			cout << "negCount incremented" << endl;
+			negCount ++;
+		}
+
+
+		if(ispunct(checked1) && ispunct(checked2))
+		{
+			if( (splitter[i-1] == "-") && (splitter[i] == "-") && negCount >= 2 )
+			{
+				cout <<" ERROR: There are too many -'s in a row"<<endl;
+				system("PAUSE");
+				exit(EXIT_FAILURE);
+			}
+			else if((splitter[i-1] == "-") && ( splitter[i] != "(" && splitter[i] != ")" && splitter[i] != "-") )
+			{
+				cout <<" ERROR: You have input a - before another character"<<endl;
+				system("PAUSE");
+				exit(EXIT_FAILURE);
+			}
+			else if((splitter[i-1] == "+") && (splitter[i] == "+"))
+			{
+				cout <<" ERROR: There are too many +'s in a row"<<endl;
+				system("PAUSE");
+				exit(EXIT_FAILURE);
+			}
+			else if((splitter[i-1] == "/") && (splitter[i] == "/"))
+			{
+				cout <<" ERROR: There are too many /'s in a row"<<endl;
+				system("PAUSE");
+				exit(EXIT_FAILURE);
+			}
+			else if((splitter[i-1] == "*") && (splitter[i] == "*"))
+			{
+				cout <<" ERROR: There are too many *'s in a row"<<endl;
+				system("PAUSE");
+				exit(EXIT_FAILURE);
+			}
+			else if((splitter[i-1] == "^") && (splitter[i] == "^"))
+			{
+				cout <<" ERROR: There are too many ^'s in a row"<<endl;
+				system("PAUSE");
+				exit(EXIT_FAILURE);
+			}
+			else if(i+1 < splitter.size())
+			{
+				string temp3 = splitter[i+1];
+				char checked3 = temp3[0];
+				
+				if(splitter[i-1] == "-" && splitter[i] == "-" && !ispunct(checked3))
+				{
+					fixed = doubleNeg(splitter, i-1);
+					splitter = fixed;
+					negCount = 0;
+				}
+			}
+
+			else if(splitter[i-1] == "-")
+			{
+				//do nothing
+			}
+			else 
+			{
+				cout <<" ERROR: random error"<<endl;
+				system("PAUSE");
+				exit(EXIT_FAILURE);
+			}
+		}
+	}
 	return splitter;
 }
 
@@ -123,8 +272,22 @@ bool isNumber(string s)
 	return true;
 }
 
-int operatorPriority(char op)
+vector<string> doubleNeg(vector<string> splitter, int i)
 {
+	double temp = stod(splitter[i+2]);
+	temp *= -1;
+	splitter.erase(splitter.begin()+i);
+	splitter.erase(splitter.begin()+i+1);
+	ostringstream convert;
+	convert << temp;
+	string str = convert.str();
+	i=i++;
+	splitter.insert(splitter.begin()+i, str);
+	return splitter;
+}
+int operatorPriority(string operation)
+{
+	char op = operation[0];
 	switch(op)
 	{
 	case '+':
@@ -142,7 +305,6 @@ int operatorPriority(char op)
 	}
 	
 }
-
 double addition(double num1, double num2)
 {
 	return num1 + num2;
