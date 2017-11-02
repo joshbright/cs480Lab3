@@ -240,10 +240,6 @@ vector<string> twoCharacterChecker(vector<string> splitter)
 		else
 		{
 			char checked1 = temp1[0];
-			if(splitter[i-1] == "-")
-			{
-				negCount ++;
-			}
 		}
 
 		if(isNumber(temp2))
@@ -455,7 +451,7 @@ double division(double num1, double num2)
 	//will check before this function to ensure num2 != 0
 	if(num2 == 0)
 	{
-		cout <<" ERROR: You attempted to divide by divide by zero"<<endl;
+		cout <<" ERROR: You attempted to divide by divide by zeo"<<endl;
 		system("PAUSE");
 		exit(EXIT_FAILURE);
 	}
