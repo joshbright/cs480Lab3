@@ -58,7 +58,7 @@ void parser()
 			switch(test)
 			{
 			case '+':
-				while(operatorPriority(tempString) <= operatorPriority(stack.back()) && !stack.empty())
+				while(!stack.empty() && operatorPriority(tempString) <= operatorPriority(stack.back()))
 				{
 					reversePolish.push_back(stack.back());
 					stack.pop_back();
@@ -66,7 +66,7 @@ void parser()
 				stack.push_back(splitter[i]);
 				break;
 			case '-':
-				while(operatorPriority(tempString) <= operatorPriority(stack.back()) && !stack.empty())
+				while(!stack.empty() && operatorPriority(tempString) <= operatorPriority(stack.back()))
 				{
 					reversePolish.push_back(stack.back());
 					stack.pop_back();
@@ -74,7 +74,7 @@ void parser()
 				stack.push_back(splitter[i]);
 				break;
 			case '/':
-				while(operatorPriority(tempString) <= operatorPriority(stack.back()) && !stack.empty())
+				while(!stack.empty() && operatorPriority(tempString) <= operatorPriority(stack.back()))
 				{
 					reversePolish.push_back(stack.back());
 					stack.pop_back();
@@ -82,7 +82,7 @@ void parser()
 				stack.push_back(splitter[i]);
 				break;
 			case '*':
-				while(operatorPriority(tempString) <= operatorPriority(stack.back()) && !stack.empty())
+				while(!stack.empty() && operatorPriority(tempString) <= operatorPriority(stack.back()))
 				{
 					reversePolish.push_back(stack.back());
 					stack.pop_back();
@@ -90,7 +90,7 @@ void parser()
 				stack.push_back(splitter[i]);
 				break;
 			case '^':
-				while(operatorPriority(tempString) <= operatorPriority(stack.back()) && !stack.empty())
+				while(!stack.empty() && operatorPriority(tempString) <= operatorPriority(stack.back()))
 				{
 					reversePolish.push_back(stack.back());
 					stack.pop_back();
