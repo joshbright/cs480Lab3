@@ -39,7 +39,7 @@ void parser()
 
 	int sizeOfSplitter = splitter.size();
 
-
+	int parenCount = 0;
 	for(int i = 0; i < sizeOfSplitter; i++)
 	{
 		//if the element at j is a number push to the reversePolish array
@@ -95,6 +95,7 @@ void parser()
 				break;
 			case '(':
 				stack.push_back(splitter[i]); //insert ( onto stack
+				parenCount++;
 				break;
 			case ')':
 				while(stack.back() != "(" && !stack.empty())
@@ -102,6 +103,7 @@ void parser()
 					reversePolish.push_back(stack.back()); //add top element of stack to reverse polish
 					stack.pop_back(); //pop element off the stack
 				}
+				parenCount--;
 				stack.pop_back();
 				break;
 			default:
@@ -109,6 +111,13 @@ void parser()
 				return;
 			}
 		}
+	}
+
+	if(parenCount != 0)
+	{
+		cout <<" ERROR: Parenthesis aren't balanced"<<endl;
+		system("PAUSE");
+		exit(EXIT_FAILURE);
 	}
 
 	while(!stack.empty())
